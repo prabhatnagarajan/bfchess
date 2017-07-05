@@ -5,8 +5,6 @@ def even(num):
 
 FILES = ['a','b','c','d','e','f','g','h']
 RANKS = range(1, 9)
-print FILES
-print RANKS
 SQUARES = []
 SQUARE_COLOR = dict()
 for file in FILES:
@@ -24,3 +22,5 @@ for file in FILES:
 				SQUARE_COLOR[square] = Color.BLACK
 			else:
 				SQUARE_COLOR[square] = Color.WHITE		
+
+NUM_SQUARES = 64
