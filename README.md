@@ -1,6 +1,10 @@
 # bfchess
 This repository contains tools I need to prepare myself to play blindfold chess.
 
+## Known Dependencies
+- numpy
+- python-chess ([Documentation](https://media.readthedocs.org/pdf/python-chess/v0.18.0/python-chess.pdf))
+
 ## Planned Features
 
 - Generate Worksheets for identifying the color of squares
