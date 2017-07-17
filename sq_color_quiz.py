@@ -62,9 +62,11 @@ def generate_latex_quiz(quiz_num):
         item = item + quiz[num]
         quiz_latex.append(item)
     quiz_latex.append("\\end{enumerate}")
+    quiz_latex.append("\\end{multicols}")
 
     quiz_latex.append("\\newpage")
     quiz_latex.append("\\subsection{Answer Key}")
+    quiz_latex.append("\\begin{multicols}{3}")
     quiz_latex.append("\\begin{enumerate}")
     for num in range(NUM_SQUARES):
         item = "\t \\item "
