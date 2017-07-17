@@ -3,7 +3,7 @@ from color import *
 import argparse
 import numpy as np
 import random
-
+import sys
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -45,11 +45,17 @@ def generate_cli_quiz():
                 wrong.append((q, a))
 
 
-def generate_latex_quiz():
-    quiz, answer_key = generate_quiz()
+def generate_n_latex_quizzes(n):
+    quizzes = []
+    for i in range(n):
+        quizzes.append(generate_latex_quiz(i))
+    return quizzes
 
+def generate_latex_quiz(quiz_num):
+    quiz, answer_key = generate_quiz()
     quiz_latex =[]
-    quiz_latex.append("\\subsection {Quiz}")
+    quiz_latex.append("\\subsection {Quiz " + str(quiz_num) + "}")
+    quiz_latex.append("\\begin{multicols}{3}")
     quiz_latex.append("\\begin{enumerate}")
     for num in range(NUM_SQUARES):
         item = "\t \\item "
@@ -69,15 +75,17 @@ def generate_latex_quiz():
             item = item + "\\textbf{W}"
         quiz_latex.append(item)
     quiz_latex.append("\\end{enumerate}")
+    quiz_latex.append("\\end{multicols}")
 
-    for command in quiz_latex:
-        print command
-
+def print_quizzes(quizzes):
+    for quiz in quizzes:
+        for command in quiz:
+            print command
 
 def main():
     args = parse_args()
     if args.latex:
-        generate_latex_quiz()
+        quizzes = generate_n_latex_quizzes(100)
     else:
         generate_cli_quiz()
 
