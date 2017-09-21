@@ -17,3 +17,4 @@ This repository contains tools I need to prepare myself to play blindfold chess.
 - Tactics puzzles where the player is given the position in pgn form
 - Checkmate puzzles with Knight and Bishop mate, double bishop mate, etc.
 - Exercises where the player must identify which squares the king can move to
+- The program recites moves of a game and the player must move the pieces on the board apace with the game
