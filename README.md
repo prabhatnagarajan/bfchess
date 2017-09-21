@@ -5,9 +5,11 @@ This repository contains tools I need to prepare myself to play blindfold chess.
 - numpy
 - python-chess ([Documentation](https://media.readthedocs.org/pdf/python-chess/v0.18.0/python-chess.pdf))
 
+## Existing Features
+- Generate Worksheets for identifying the color of squares
+
 ## Planned Features
 
-- Generate Worksheets for identifying the color of squares
 - Generate Worksheets for identifying the diagonals of squares
 - A UI for clicking on squares as they appear
 - Have a piece on a square and identify all squares attacking by that piece
