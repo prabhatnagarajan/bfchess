@@ -6,6 +6,8 @@ import random
 import sys
 from pdb import set_trace
 import chess
+import queue
+import sets
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -17,7 +19,7 @@ def generate_quiz(piece):
     #Quiz is dictionary mapping a problem number to square
     board = chess.Board()
     board.clear_board()
-    loc = np.random.randint(64)
+    start = np.random.randint(64)
     # constants from python-chess api
     if piece == 'N':
         piece_int = chess.KNIGHT
@@ -28,16 +30,30 @@ def generate_quiz(piece):
     else:
         piece_int = chess.QUEEN
     dest = np.random.randint(64)
-    while (piece == 'B' and SQUARE_COLOR[SQUARES[loc]] != SQUARE_COLOR[SQUARES[dest]]) or (dest == loc):
+    while (piece == 'B' and SQUARE_COLOR[SQUARES[start]] != SQUARE_COLOR[SQUARES[dest]]) or (dest == start):
         dest = np.random.randint(64)
+    board.set_piece_at(start, chess.Piece(piece_int, True))
+    return (PIECES[piece_int], chess.SQUARE_NAMES[start], chess.SQUARE_NAMES[dest], num_moves(board, start, dest, piece_int))
 
-    board.set_piece_at(loc, chess.Piece(piece_int, True))
-
-    set_trace()
-    return (quiz, answer_key)
-
-# def calc_distance(board):
-
+def num_moves(board, start, dest, piece):
+    squares = queue.Queue()
+    squares.put(start)
+    visited = sets.Set()
+    visited.add(start)
+    dist = dict()
+    dist[start] = 0
+    while not squares.empty():
+        board.clear_board()
+        square = squares.get()
+        board.set_piece_at(square, chess.Piece(piece, True))
+        neighbors = board.attacks(chess.SQUARES[square])
+        for neighbor in neighbors:
+            if neighbor == dest:
+                return dist[square] + 1
+            if neighbor not in visited:
+                squares.put(neighbor)
+                visited.add(neighbor)
+                dist[neighbor] = dist[square] + 1
 
 def generate_cli_quiz():
     quiz, answer_key = generate_quiz()
@@ -103,8 +119,9 @@ def print_quizzes(quizzes):
 
 def main():
     args = parse_args()
-    quizzes = generate_quiz(args.piece)
-    print_quizzes(quizzes)
+    quiz = generate_quiz(args.piece)
+    print quiz
+    # print_quizzes(quizzes)
 
 if __name__ == '__main__':
     main()

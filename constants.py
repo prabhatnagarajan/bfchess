@@ -1,4 +1,5 @@
 from color import *
+import chess
 
 def even(num):
     return num % 2 == 0
@@ -85,3 +86,11 @@ for diagonal in DIAGONALS:
     rank2 = get_rank(diagonal[1])
     DIAGONAL_LENGTH[diagonal] = abs(rank1 - rank2) + 1
 
+
+PIECES = {}
+PIECES[chess.PAWN] = "PAWN"
+PIECES[chess.KNIGHT] = "KNIGHT"
+PIECES[chess.BISHOP] = "BISHOP"
+PIECES[chess.ROOK] = "ROOK"
+PIECES[chess.QUEEN] = "QUEEN"
+PIECES[chess.KING] = "KING"
