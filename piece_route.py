@@ -7,38 +7,40 @@ import sys
 from pdb import set_trace
 import chess
 import queue
-import sets
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--piece', choices=["N", "Q", "B", "R"], required=True)
     return parser.parse_args()
 
+def get_piece_int(piece_symbol):
+    if piece_symbol == 'N' or piece_symbol == 'n':
+        piece_int = chess.KNIGHT
+    elif piece_symbol == 'B':
+        piece_int = chess.BISHOP
+    elif piece_symbol == 'R':
+        piece_int = chess.ROOK
+    elif piece_symbol == 'Q':
+        piece_int = chess.QUEEN
+    else:
+        raise ValueError("{} not supported yet".format(piece_symbol))
+    return  piece_int
 
 def generate_quiz(piece):
     #Quiz is dictionary mapping a problem number to square
-    board = chess.Board()
-    board.clear_board()
     start = np.random.randint(64)
     # constants from python-chess api
-    if piece == 'N':
-        piece_int = chess.KNIGHT
-    elif piece == 'B':
-        piece_int = chess.BISHOP
-    elif piece == 'R':
-        piece_int = chess.ROOK
-    else:
-        piece_int = chess.QUEEN
+    piece_int = get_piece_int(piece)
     dest = np.random.randint(64)
     while (piece == 'B' and SQUARE_COLOR[SQUARES[start]] != SQUARE_COLOR[SQUARES[dest]]) or (dest == start):
         dest = np.random.randint(64)
-    board.set_piece_at(start, chess.Piece(piece_int, True))
-    return (PIECES[piece_int], chess.SQUARE_NAMES[start], chess.SQUARE_NAMES[dest], num_moves(board, start, dest, piece_int))
+    return (PIECES[piece_int], chess.SQUARE_NAMES[start], chess.SQUARE_NAMES[dest], num_moves(start, dest, piece_int))
 
-def num_moves(board, start, dest, piece):
+def num_moves(start, dest, piece):
+    board = chess.Board()
     squares = queue.Queue()
     squares.put(start)
-    visited = sets.Set()
+    visited = set()
     visited.add(start)
     dist = dict()
     dist[start] = 0
@@ -54,6 +56,34 @@ def num_moves(board, start, dest, piece):
                 squares.put(neighbor)
                 visited.add(neighbor)
                 dist[neighbor] = dist[square] + 1
+
+def check_solution(piece, start_sq_str, dest_sq_str, moves):
+    board = chess.Board()
+    board.clear_board()
+    squares = moves.split()
+    assert squares[0] == start_sq_str
+    assert squares[len(squares) - 1] == dest_sq_str
+    current_square = chess.parse_square(start_sq_str)
+    wrong = False
+    # check if path is valid
+    index = 0
+    while not wrong:
+        current_square = chess.parse_square(squares[index])
+        board.set_piece_at(current_square, chess.Piece(PIECES_TO_INT[piece], True))
+        attacked_squares = board.attacks(chess.SQUARES[current_square])
+        next_square = chess.parse_square(squares[index + 1])
+        if next_square in attacked_squares:
+            wrong = False
+        else:
+            wrong = True
+            break
+        index += 1
+        if index == len(squares) - 1:
+            break
+    is_valid_path = not wrong
+    num_moves_used = len(squares) - 1
+    optimal_num_moves = num_moves(chess.parse_square(start_sq_str), chess.parse_square(dest_sq_str), PIECES_TO_INT[piece])
+    return is_valid_path, is_valid_path and num_moves_used == optimal_num_moves
 
 def generate_cli_quiz():
     quiz, answer_key = generate_quiz()
@@ -120,7 +150,15 @@ def print_quizzes(quizzes):
 def main():
     args = parse_args()
     quiz = generate_quiz(args.piece)
-    print(quiz)
+    piece = quiz[0]
+    start_sq = quiz[1]
+    dest_sq = quiz[2]
+    print("Move piece " + piece + " from " + start_sq + " to " + dest_sq)
+    solution = input("Write your squares, starting with the original square to the destination, separated by spaces. \n")
+    set_trace()
+    valid_path, optimal_path = check_solution(piece, start_sq, dest_sq, solution)
+    print(valid_path)
+    print(optimal_path)
     # print_quizzes(quizzes)
 
 if __name__ == '__main__':
