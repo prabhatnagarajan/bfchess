@@ -57,6 +57,22 @@ def num_moves(start, dest, piece):
                 visited.add(neighbor)
                 dist[neighbor] = dist[square] + 1
 
+def generate_solutions(piece, start_sq, dest_sq):
+    solutions = []
+    board = chess.Board()
+    board.clear_board()
+    current_solution = []
+    visited = {}
+    current_square = chess.parse_square(start_sq)
+    dest_sq = chess.parse_square(dest_sq)
+    board.set_piece_at(current_square, chess.Piece(PIECES_TO_INT[piece], True))
+    unvisited = board.attacks(chess.SQUARES[current_square])
+    while unvisited:
+        square = unvisited.pop()
+        if square == dest_sq:
+            set_trace()
+
+
 def check_solution(piece, start_sq_str, dest_sq_str, moves):
     board = chess.Board()
     board.clear_board()
@@ -153,13 +169,13 @@ def main():
     piece = quiz[0]
     start_sq = quiz[1]
     dest_sq = quiz[2]
+    generate_solutions(piece, start_sq, dest_sq)
+
     print("Move piece " + piece + " from " + start_sq + " to " + dest_sq)
     solution = input("Write your squares, starting with the original square to the destination, separated by spaces. \n")
-    set_trace()
     valid_path, optimal_path = check_solution(piece, start_sq, dest_sq, solution)
-    print(valid_path)
-    print(optimal_path)
-    # print_quizzes(quizzes)
+    print("Is Valid Path: " + str(valid_path))
+    print("Is Optimal Path: " + str(optimal_path))
 
 if __name__ == '__main__':
     main()

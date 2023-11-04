@@ -85,7 +85,7 @@ def generate_latex_quiz(quiz_num):
 def print_quizzes(quizzes):
     for quiz in quizzes:
         for command in quiz:
-            print command
+            print(command)
 
 def main():
     quizzes = generate_n_latex_quizzes(int(sys.argv[1]))
